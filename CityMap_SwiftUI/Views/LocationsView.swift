@@ -20,18 +20,7 @@ struct LocationsView: View {
                 header
                     .padding()
                 Spacer()
-                
-                ZStack {
-                    ForEach(viewModel.locations) { location in
-                        if viewModel.mapLocation == location {
-                                LocationsPreviewView(location: location)
-                                    .shadow(color: .black.opacity(0.3), radius: 20)
-                                    .padding()
-                                    .padding(.bottom, 15)
-                                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
-                        }
-                    }
-                }
+                locationPreviewCard
             }
         }
     }
@@ -62,7 +51,7 @@ extension LocationsView {
                             .fontWeight(.black)
                             .foregroundColor(.primary)
                             .padding()
-                            .rotationEffect(Angle(degrees: viewModel.showLocationList ? 180 : 0))
+                            .rotationEffect(Angle(degrees: viewModel.showLocationList ? 0 : -180))
                     }
             }
             
@@ -71,8 +60,21 @@ extension LocationsView {
             }
             
         }
-        .background(.thickMaterial)
-        .cornerRadius(10)
+        .background(RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial))
         .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 15)
+    }
+    
+    private var locationPreviewCard: some View {
+        ZStack {
+            ForEach(viewModel.locations) { location in
+                if viewModel.mapLocation == location {
+                    LocationsPreviewView(location: location)
+                        .shadow(color: .black.opacity(0.3), radius: 20)
+                        .padding()
+                        .padding(.bottom, 15)
+                        .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                }
+            }
+        }
     }
 }

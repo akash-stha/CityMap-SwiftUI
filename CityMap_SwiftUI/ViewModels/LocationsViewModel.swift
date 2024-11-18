@@ -48,7 +48,7 @@ class LocationsViewModel: ObservableObject {
     }
     
     func toggleLocationsList() {
-        withAnimation(.bouncy) {
+        withAnimation(.easeInOut) {
             showLocationList.toggle()
         }
     }
@@ -58,6 +58,24 @@ class LocationsViewModel: ObservableObject {
             mapLocation = getLocation
             showLocationList = false
         }
+    }
+    
+    func nextButtonPressed() {
+        // Getting the current location index
+        guard let currentIndex = locations.firstIndex(where: { $0 == mapLocation }) else { return }
+        
+        // Check if the current location is valid
+        let nextIndex = currentIndex + 1
+        guard locations.indices.contains(nextIndex) else {
+            // Next index is not valid restart from 0 index
+            guard let firstLocation = locations.first else { return }
+            showNextLoction(getLocation: firstLocation)
+            return
+        }
+        
+        // If next index is valid
+        let nextLocation = locations[nextIndex]
+        showNextLoction(getLocation: nextLocation)
     }
     
 }

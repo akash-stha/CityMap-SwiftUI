@@ -23,6 +23,8 @@ struct LocationsListView: View {
             }
         }
         .listStyle(.plain)
+        .frame(height: 45 * 1.66 * CGFloat(viewModel.locations.count))
+        .scrollDisabled(true)
     }
 }
 
@@ -52,6 +54,7 @@ extension LocationsListView {
                 Text(getLocation.cityName)
                     .font(.subheadline)
             }
+            .frame(height: 45)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
