@@ -15,12 +15,64 @@ struct LocationsView: View {
     var body: some View {
         ZStack {
             Map(coordinateRegion: $viewModel.mapRegion)
+                .ignoresSafeArea()
+            VStack(spacing: 0) {
+                header
+                    .padding()
+                Spacer()
+                
+                ZStack {
+                    ForEach(viewModel.locations) { location in
+                        if viewModel.mapLocation == location {
+                                LocationsPreviewView(location: location)
+                                    .shadow(color: .black.opacity(0.3), radius: 20)
+                                    .padding()
+                                    .padding(.bottom, 15)
+                                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                        }
+                    }
+                }
+            }
         }
-        .ignoresSafeArea()
     }
 }
+
 
 #Preview {
     LocationsView()
         .environmentObject(LocationsViewModel())
+}
+
+extension LocationsView {
+    private var header: some View {
+        VStack {
+            Button {
+                viewModel.toggleLocationsList()
+            } label: {
+                Text(viewModel.mapLocation.name + ", " + viewModel.mapLocation.cityName)
+                    .font(.title2)
+                    .fontWeight(.black)
+                    .frame(height: 55)
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.primary)
+//                    .animation(.none, value: viewModel.mapLocation)
+                    .overlay(alignment: .leading) {
+                        Image(systemName: "arrow.down")
+                            .font(.headline)
+                            .fontWeight(.black)
+                            .foregroundColor(.primary)
+                            .padding()
+                            .rotationEffect(Angle(degrees: viewModel.showLocationList ? 180 : 0))
+                    }
+            }
+            
+            if viewModel.showLocationList {
+                LocationsListView()
+            }
+            
+        }
+        .background(.thickMaterial)
+        .cornerRadius(10)
+        .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 15)
+    }
 }
