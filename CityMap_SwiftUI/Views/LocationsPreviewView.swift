@@ -10,6 +10,7 @@ import SwiftUI
 struct LocationsPreviewView: View {
     
     @EnvironmentObject private var viewModel: LocationsViewModel
+    @Environment(\.colorScheme) private var colorScheme
     
     let location: Location
     
@@ -70,7 +71,7 @@ extension LocationsPreviewView {
     
     private var learnMoreBtn: some View {
         Button {
-            
+            viewModel.sheetLocation = location
         } label: {
             Text("Learn More")
                 .font(.headline)
@@ -86,12 +87,15 @@ extension LocationsPreviewView {
             HStack {
                 Text("Next")
                     .font(.headline)
+                    .foregroundStyle(colorScheme == .dark ? .white : .accentColor)
                 
                 Image(systemName: "arrow.right")
                     .font(.headline)
+                    .foregroundStyle(colorScheme == .dark ? .white : .accentColor)
             }
             .frame(width: 95, height: 30)
         }
         .buttonStyle(.bordered)
+        .environment(\.colorScheme, colorScheme)
     }
 }

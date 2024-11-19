@@ -14,14 +14,15 @@ struct LocationsView: View {
     
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $viewModel.mapRegion)
-                .ignoresSafeArea()
+            mapLayerView
             VStack(spacing: 0) {
                 header
-                    .padding()
                 Spacer()
                 locationPreviewCard
             }
+        }
+        .fullScreenCover(item: $viewModel.sheetLocation, onDismiss: nil) { loaction in
+            LocationDetailView(locations: loaction)
         }
     }
 }
@@ -51,7 +52,7 @@ extension LocationsView {
                             .fontWeight(.black)
                             .foregroundColor(.primary)
                             .padding()
-                            .rotationEffect(Angle(degrees: viewModel.showLocationList ? 0 : -180))
+                            .rotationEffect(Angle(degrees: viewModel.showLocationList ? -180 : 0))
                     }
             }
             
@@ -62,6 +63,7 @@ extension LocationsView {
         }
         .background(RoundedRectangle(cornerRadius: 10).fill(.ultraThinMaterial))
         .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 15)
+        .padding()
     }
     
     private var locationPreviewCard: some View {
@@ -76,5 +78,21 @@ extension LocationsView {
                 }
             }
         }
+    }
+    
+    private var mapLayerView: some View {
+        Map(coordinateRegion: $viewModel.mapRegion,
+            annotationItems: viewModel.locations,
+            annotationContent: { location in
+            MapAnnotation(coordinate: location.coordinates) {
+                LocationMapAnnotationView()
+                    .scaleEffect(viewModel.mapLocation == location ? 1 : 0.7)
+                    .shadow(radius: 10)
+                    .onTapGesture {
+                        viewModel.showNextLoction(getLocation: location)
+                    }
+            }
+        })
+        .ignoresSafeArea()
     }
 }
