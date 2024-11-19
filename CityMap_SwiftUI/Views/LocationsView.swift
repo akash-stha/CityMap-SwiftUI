@@ -15,6 +15,11 @@ struct LocationsView: View {
     var body: some View {
         ZStack {
             mapLayerView
+                .onTapGesture {
+                    if viewModel.showLocationList {
+                        viewModel.toggleLocationsList()
+                    }
+                }
             VStack(spacing: 0) {
                 header
                 Spacer()
