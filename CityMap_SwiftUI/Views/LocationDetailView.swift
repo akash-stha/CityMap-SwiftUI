@@ -12,6 +12,9 @@ struct LocationDetailView: View {
     
     @EnvironmentObject private var viewModel: LocationsViewModel
     @Environment(\.colorScheme) private var colorScheme
+    private let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    @State private var currentIndex: Int = 0
+
     let locations: Location
     
     var body: some View {
@@ -49,18 +52,24 @@ struct LocationDetailView: View {
 extension LocationDetailView {
     
     private var headerImage: some View {
-        TabView {
-            ForEach(locations.imageNames, id: \.self) { imageName in
+        TabView(selection: $currentIndex) {
+            ForEach(Array(locations.imageNames.enumerated()), id: \.offset) { index, imageName in
                 Image(imageName)
                     .resizable()
                     .scaledToFill()
                     .frame(width: UIScreen.main.bounds.width)
                     .clipped()
+                    .tag(index) // Using the loop index as the tag
             }
         }
         .frame(height: 500)
         .tabViewStyle(PageTabViewStyle())
         .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
+        .onReceive(timer) { _ in
+            withAnimation {
+                currentIndex = (currentIndex + 1) % locations.imageNames.count
+            }
+        }
     }
     
     

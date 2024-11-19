@@ -15,13 +15,15 @@ struct LocationsView: View {
     var body: some View {
         ZStack {
             mapLayerView
-                .onTapGesture {
-                    if viewModel.showLocationList {
+                .contentShape(Rectangle())
+                .gesture(
+                    viewModel.showLocationList ? TapGesture().onEnded {
                         viewModel.toggleLocationsList()
-                    }
-                }
+                    } : nil // Disable gesture if `showLocationList` is false
+                )
             VStack(spacing: 0) {
                 header
+                    .frame(maxWidth: 600)
                 Spacer()
                 locationPreviewCard
             }
@@ -79,6 +81,8 @@ extension LocationsView {
                         .shadow(color: .black.opacity(0.3), radius: 20)
                         .padding()
                         .padding(.bottom, 15)
+                        .frame(maxWidth: 600)
+                        .frame(maxWidth: .infinity)
                         .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
                 }
             }
